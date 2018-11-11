@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.input-middle {
+    width: 250px;
+}
+
+.input-big {
+    width: 450px;
+}
+
+.input-form {
+    padding: 5px;
+    background-color: orange;
+}
+
+.search-form {
+    padding: 5px;
+    background-color: cornflowerblue;
+}
+
+.news-time {
+    color: grey;
+    font-size: 12px;
+    margin-left: 30px;
+}
+
+p {
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+.news {
+    margin-bottom: 5px;
+    background-color: bisque;
+}
+
+.news-ref {
+    font-size: 14px;
+    color: blueviolet;
+    margin-left: 20px;
+}

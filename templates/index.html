@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="static/css/style.css"/>
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div>Алгоритмы mail.ru/yandex.ru работают автоматически и получают информацию с одноименных сайтов. Открыть <a href="http://localhost:8088/drop" target="_blank">localhost:8088/drop</a> для удаления всех новостей.
+        <p>Примеры для RSS-лент : </p>
+        <p>1) https://news.mail.ru/rss/economics/66/ </p>
+        <p>2) https://news.mail.ru/rss/sport/ </p>
+        <p>3) https://news.yandex.ru/communal.rss </p>
+        <p>4) https://news.yandex.ru/science.rss </p>
+    </div>
+    <div class="input-form">
+        <label>Введите сайт: <input type="text" class="input-middle" id="input-rss" disabled=""></label>
+        <label>Выберите алгоритм:
+            <select class="input-select" id="input-select">
+                <option value="1">mail.ru</option>
+                <option value="2">yandex.ru</option>
+                <option value="3">mail rss</option>
+                <option value="4">yandex rss</option>
+            </select>
+        </label>
+        <input type="button" value="Выполнить" class="input-button-middle" id="input-run">
+    </div>
+    <div class="search-form">
+        <label>Поиск: <input type="text" class="input-big" id="input-search"></label>
+    </div>
+    <div class="news-container">
+        {{range .News }}
+            <div class="news">
+                <a class="news-ref" href="{{.Link}}">{{.Title}}</a>
+                    <p class="news-time">{{.Date}}</p>
+            </div>
+        {{end}}
+    </div>
+    <script>
+        function delay(callback, ms) {
+            var timer = 0;
+            return function() {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+
+        $("#input-search").keyup(delay(function () {
+            console.log("Sent" + this.value);
+            $.ajax({
+                url: "/search",
+                type: "GET",
+                data: {name : this.value},
+                success: function (data) {
+                    console.log(data);
+                    $(".news-container").html(data);
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                },
+            });
+        }, 500));
+
+        $("#input-select").change(function() {
+            console.log("New select:" + this.value);
+            switch(this.value) {
+                case "1":
+                case "2":
+                    $( "#input-rss" ).attr('disabled', '');
+                    break;
+                case "3":
+                case "4":
+                    $( "#input-rss" ).removeAttr("disabled");
+                    break;
+            }
+        });
+
+        $("#input-run").click(function(){
+            if((($("#input-select").val() === "3") || ($("#input-select").val() === "4")) && $( "#input-rss" ).val() === "") {
+                alert("Nothing to find");
+                return
+            }
+           $.ajax({
+               url: "/run",
+               type: "GET",
+               data: {algo: $("#input-select")[0].value, site: $("#input-rss").val() },
+               success: function(data) {
+                   console.log("Added/From: " + data);
+               },
+               error: function(xhr, status, error) {
+                   alert(error);
+               },
+           }) ;
+        });
+    </script>
+</body>
+</html>
